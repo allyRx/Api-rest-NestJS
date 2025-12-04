@@ -16,11 +16,13 @@ export class CoffeesService {
     ){}
 
     findAll(){
-        return this.coffeesRepository.find();
+        return this.coffeesRepository.find({
+            relations:['flavors']
+        });
     }
 
     async findOne(id:string){
-      const coffeExist = await this.coffeesRepository.findOne({where: {id: +id}});
+      const coffeExist = await this.coffeesRepository.findOne({where: {id: +id} , relations:['flavors']});
 
       if(!coffeExist){
         throw new NotFoundException(`This product is not fouund ${id}`)
