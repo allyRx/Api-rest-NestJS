@@ -1,4 +1,4 @@
-import { Body, Controller , Delete, Get, Param, Patch, Post, Query, Res} from '@nestjs/common';
+import { Body, Controller , Delete, Get, Param, Patch, Post, Query, Res, UsePipes, ValidationPipe} from '@nestjs/common';
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDtoTs } from './dto/update-coffee.dto.ts';
@@ -9,7 +9,7 @@ export class CoffeesController {
     
     //Call coffeeservice and add permission for read
     constructor(private readonly coffeeService: CoffeesService){}
-    
+    @UsePipes(ValidationPipe)
     @Get()
     getAllCoffees(@Query() paginationQuery: PaginationQueryDto){
     

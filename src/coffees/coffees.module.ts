@@ -8,7 +8,7 @@ import { Event } from 'src/events/entities/event.entity/event';
 
 @Module({imports:[TypeOrmModule.forFeature([Coffees ,FlavorsEntity , Event])] ,
     controllers: [CoffeesController],
-    providers: [CoffeesService , { provide: 'COFFEE_BRAND' , useValue:['Kona Coffee' , 'Blue Mountain'] }],
+    providers: [CoffeesService],
     exports: [CoffeesService]
     },
     
