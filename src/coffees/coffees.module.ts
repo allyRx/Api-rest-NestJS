@@ -6,5 +6,12 @@ import { Coffees } from './Entities/coffees.entity';
 import { FlavorsEntity } from './Entities/flavors.entity';
 import { Event } from 'src/events/entities/event.entity/event';
 
-@Module({imports:[TypeOrmModule.forFeature([Coffees ,FlavorsEntity , Event])] ,controllers: [CoffeesController], providers: [CoffeesService]})
+@Module({imports:[TypeOrmModule.forFeature([Coffees ,FlavorsEntity , Event])] ,
+    controllers: [CoffeesController],
+    providers: [CoffeesService , { provide: 'COFFEE_BRAND' , useValue:['Kona Coffee' , 'Blue Mountain'] }],
+    exports: [CoffeesService]
+    },
+    
+    
+    )
 export class CoffeesModule {}

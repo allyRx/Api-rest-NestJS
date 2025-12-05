@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn ,JoinTable} from "typeorm";
 import { Coffees } from "./coffees.entity";
-import { CreateCoffeeDto } from "../dto/create-coffee.dto";
+
 
 @Entity("flavors")
 export class FlavorsEntity {
