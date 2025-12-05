@@ -22,8 +22,6 @@ export class CoffeesService {
         private readonly flavorsRepository: Repository<FlavorsEntity>,
 
         private readonly dataSource: DataSource,
-
-        @Inject(COFFEE_BRAND) private readonly coffeeBrands: string[],
     ){}
 
     findAll(paginationQuery: PaginationQueryDto){
