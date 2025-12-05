@@ -2,6 +2,7 @@ import { Body, Controller , Delete, Get, Param, Patch, Post, Query, Res} from '@
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDtoTs } from './dto/update-coffee.dto.ts';
+import { PaginationQueryDto } from 'src/common/pagination-query.dto';
 
 @Controller('coffees')
 export class CoffeesController {
@@ -10,9 +11,9 @@ export class CoffeesController {
     constructor(private readonly coffeeService: CoffeesService){}
     
     @Get()
-    getAllCoffees(){
-   // const {limit , offset} = paginationQuery;
-      return this.coffeeService.findAll()
+    getAllCoffees(@Query() paginationQuery: PaginationQueryDto){
+    
+      return this.coffeeService.findAll(paginationQuery)
     }
 
     @Get(":id")

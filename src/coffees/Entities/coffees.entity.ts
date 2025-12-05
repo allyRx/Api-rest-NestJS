@@ -12,8 +12,11 @@ export class Coffees{
     
     @Column()
     Brand:string;
+
+    @Column({default: 0})
+    recommendations: number;
    
    
-    @ManyToMany(type=>FlavorsEntity, flavors => flavors.coffees)
-    flavors: string[];
+    @ManyToMany(type=>FlavorsEntity, flavors => flavors.coffees , {cascade:true})
+    flavors: FlavorsEntity[];
 }
