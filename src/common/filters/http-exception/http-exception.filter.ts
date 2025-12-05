@@ -20,3 +20,7 @@ export class HttpExceptionFilter<T extends HttpException > implements ExceptionF
       });
   }
 }
+/**
+ * Custom HTTP Exception Filter to handle HttpExceptions globally.
+ * Catches HttpExceptions and formats the response with additional details.
+ */
