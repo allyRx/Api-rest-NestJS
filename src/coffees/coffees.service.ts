@@ -7,12 +7,12 @@ import { UpdateCoffeeDtoTs } from './dto/update-coffee.dto.ts';
 import { FlavorsEntity } from './Entities/flavors.entity';
 import { PaginationQueryDto } from 'src/common/pagination-query.dto';
 import { Event } from 'src/events/entities/event.entity/event';
-import { COFFEE_BRAND } from './coffee.constants';
+
 
 
 @Injectable()
 export class CoffeesService {
-   
+    
    
     constructor(
         @InjectRepository(Coffees)
