@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AuthGuard } from 'src/iam/authentication/auth.guard';
+
 
 @Controller('users')
 export class UsersController {
@@ -14,7 +14,6 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
   findAll() {
     return this.usersService.findAll();
   }
