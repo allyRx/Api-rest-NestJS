@@ -6,13 +6,13 @@ import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDtoTs } from './dto/update-coffee.dto.ts';
 import { FlavorsEntity } from './Entities/flavors.entity';
 import { PaginationQueryDto } from 'src/common/pagination-query.dto';
-import { Event } from 'src/events/entities/event.entity/event';
-import { COFFEE_BRAND } from './coffee.constants';
+
+
 
 
 @Injectable()
 export class CoffeesService {
-   
+    
    
     constructor(
         @InjectRepository(Coffees)
@@ -22,8 +22,6 @@ export class CoffeesService {
         private readonly flavorsRepository: Repository<FlavorsEntity>,
 
         private readonly dataSource: DataSource,
-
-        @Inject(COFFEE_BRAND) private readonly coffeeBrands: string[],
     ){}
 
     findAll(paginationQuery: PaginationQueryDto){
@@ -34,12 +32,13 @@ export class CoffeesService {
             take: limit
         });
     }
+    
 
     async findOne(id:string){
       const coffeExist = await this.coffeesRepository.findOne({where: {id: +id} , relations:['flavors']});
 
       if(!coffeExist){
-        throw new NotFoundException(`This product is not fouund ${id}`)
+        throw new NotFoundException(`This product is not found ${id}`)
       }
       return coffeExist
     }
@@ -58,7 +57,6 @@ export class CoffeesService {
 
 
     async update(id: string, updateCoffeeDto: UpdateCoffeeDtoTs){
-
 
         const flavors = updateCoffeeDto.flavors && (await Promise.all(
             updateCoffeeDto.flavors.map(name => this.preloadFlavorByName(name)),
@@ -93,23 +91,6 @@ export class CoffeesService {
             return existingFlavor
         }
         return this.flavorsRepository.create({name})
-    }
-
-    async recommendCoffee(coffee: Coffees){
-        return this.dataSource.transaction(async (manager) =>{
-            coffee.recommendations++;
-
-            const recommendedEvent = new Event();
-            recommendedEvent.name = 'recommended_coffee';
-            recommendedEvent.type = 'coffee';
-            recommendedEvent.payload = {coffeeId: coffee.id};
-
-            await manager.getRepository(Coffees).save(coffee);
-            await manager.getRepository(Event).save(recommendedEvent);
-
-
-            return {succes: true};
-        })
     }
 
 }
