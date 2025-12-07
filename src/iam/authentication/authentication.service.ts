@@ -1,10 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { HashingService } from '../hashing/hashing.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthenticationService {
@@ -12,6 +13,7 @@ export class AuthenticationService {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
         private readonly hashingService: HashingService,
+        private jwtService: JwtService
     ){}
 
 
@@ -30,7 +32,7 @@ export class AuthenticationService {
         }
     }
 
-    async signIn(signIn: SignInDto){
+    async signIn(signIn: SignInDto): Promise<{access_token: string}>{
         const user = await this.userRepository.findOne({where: {email: signIn.email}});
         if(!user){
             throw new Error('Invalid credentials');
@@ -42,9 +44,14 @@ export class AuthenticationService {
         );
 
         if(!passwordValid){
-            throw new Error('Invalid credentials');
+            throw new UnauthorizedException();
         }
 
-        return user;
+        const payload = {sub: user.id, email: user.email};
+
+
+        return {
+            access_token: await this.jwtService.signAsync(payload)
+        };
     }
 }

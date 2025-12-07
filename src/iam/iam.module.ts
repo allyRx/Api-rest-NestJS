@@ -5,9 +5,19 @@ import { AuthenticationController } from './authentication/authentication.contro
 import { AuthenticationService } from './authentication/authentication.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './authentication/constants';
+
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret ,
+      signOptions: {expiresIn: '500s'}
+    })
+  ],
   providers: [{
     provide: HashingService,
     useClass: BcryptService,
@@ -15,4 +25,3 @@ import { User } from 'src/users/entities/user.entity';
   controllers: [AuthenticationController]
 })
 export class IamModule {}
- 

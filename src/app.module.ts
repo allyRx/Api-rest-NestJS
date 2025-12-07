@@ -17,6 +17,7 @@ import Joi from '@hapi/joi';
         DATABASE_USER:Joi.required(),
         DATABASE_PASSWORD:Joi.required(),
         DATABASE_NAME:Joi.required(),
+        JWT_SECRET:Joi.required(),
       })
     }),
     CoffeesModule,
