@@ -3,8 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CoffeesModule } from './coffees/coffees.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
 import { ConfigModule } from '@nestjs/config';
+import { UsersModule } from './users/users.module';
+import { IamModule } from './iam/iam.module';
 import Joi from '@hapi/joi';
 
 @Module({
@@ -31,7 +32,8 @@ import Joi from '@hapi/joi';
         synchronize:true,
       }),
     }),
-    CoffeeRatingModule
+    UsersModule,
+    IamModule
   ],
   controllers: [AppController],
   providers: [AppService],
