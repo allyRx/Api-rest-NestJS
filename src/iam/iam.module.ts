@@ -6,22 +6,29 @@ import { AuthenticationService } from './authentication/authentication.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './authentication/constants';
+import { ConfigModule } from '@nestjs/config';
+import jwtConfig from './authentication/jwt.config';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from './authentication/guards/access-token.guard';
 
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forFeature([User]),
-    JwtModule.register({
-      global: true,
-      secret: jwtConstants.secret ,
-      signOptions: {expiresIn: '500s'}
-    })
+    JwtModule.registerAsync(jwtConfig.asProvider()),
+    ConfigModule.forFeature(jwtConfig)
+
   ],
-  providers: [{
+  providers: [
+    {
     provide: HashingService,
     useClass: BcryptService,
-  }, AuthenticationService],
+  }, {
+    provide: APP_GUARD,
+    useClass: AccessTokenGuard
+  },
+  AuthenticationService],
   controllers: [AuthenticationController]
 })
 export class IamModule {}

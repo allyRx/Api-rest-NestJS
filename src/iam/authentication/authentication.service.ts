@@ -6,6 +6,8 @@ import { HashingService } from '../hashing/hashing.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
+import jwtConfig from './jwt.config';
+import type { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class AuthenticationService {
@@ -13,7 +15,10 @@ export class AuthenticationService {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
         private readonly hashingService: HashingService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+              
+        @Inject(jwtConfig.KEY)
+        private readonly configurationJwt: ConfigType<typeof jwtConfig>
     ){}
 
 
@@ -33,6 +38,7 @@ export class AuthenticationService {
     }
 
     async signIn(signIn: SignInDto): Promise<{access_token: string}>{
+       
         const user = await this.userRepository.findOne({where: {email: signIn.email}});
         if(!user){
             throw new Error('Invalid credentials');
@@ -49,9 +55,18 @@ export class AuthenticationService {
 
         const payload = {sub: user.id, email: user.email};
 
+        const access_token = await this.jwtService.signAsync(payload, {
+            audience: this.configurationJwt.audience,
+            issuer: this.configurationJwt.issuer,
+            secret: this.configurationJwt.secret,
+            expiresIn: this.configurationJwt.accessTokenTtl
+        })
+
+
 
         return {
-            access_token: await this.jwtService.signAsync(payload)
-        };
+            access_token: access_token
+        }
+        
     }
 }
