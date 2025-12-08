@@ -2,6 +2,7 @@ import { Body, Controller, HttpCode, HttpStatus, Inject, Post  } from '@nestjs/c
 import { AuthenticationService } from './authentication.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
+import { Public } from '../decorators/isPublicRoutes';
 
 @Controller('auth')
 export class AuthenticationController {
@@ -12,11 +13,14 @@ export class AuthenticationController {
 
 
     @Post('sign-up')
+    @Public()
     async signUp(@Body() SignUpDto: SignUpDto){
         return this.authenticationService.signUp(SignUpDto);
     }
 
+    
     @Post('login')
+    @Public()
     @HttpCode(HttpStatus.OK)
     async signIn(@Body() signIn: SignInDto){
         return this.authenticationService.signIn(signIn);

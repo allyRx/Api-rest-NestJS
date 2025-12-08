@@ -3,7 +3,8 @@ import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDtoTs } from './dto/update-coffee.dto.ts';
 import { PaginationQueryDto } from 'src/common/pagination-query.dto';
-
+import { ActiveUser } from 'src/iam/decorators/active-user.decorators';
+import type { ActiveUserData } from 'src/iam/authentication/interfaces/active-user-data.interface';
 
 
 @Controller('coffees')
@@ -11,11 +12,12 @@ export class CoffeesController {
     
     //Call coffeeservice and add permission for read
     constructor(private readonly coffeeService: CoffeesService){}
+
+    
     @UsePipes(ValidationPipe)
     @Get()
-   
-    getAllCoffees(@Query() paginationQuery: PaginationQueryDto){
-    
+    getAllCoffees(@ActiveUser() user: ActiveUserData ,@Query() paginationQuery: PaginationQueryDto){
+        console.log(user)
       return this.coffeeService.findAll(paginationQuery)
     }
 

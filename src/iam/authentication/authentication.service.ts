@@ -8,6 +8,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfig from './jwt.config';
 import type { ConfigType } from '@nestjs/config';
+import { ActiveUserData } from './interfaces/active-user-data.interface';
 
 @Injectable()
 export class AuthenticationService {
@@ -37,7 +38,7 @@ export class AuthenticationService {
         }
     }
 
-    async signIn(signIn: SignInDto): Promise<{access_token: string}>{
+    async signIn(signIn: SignInDto){
        
         const user = await this.userRepository.findOne({where: {email: signIn.email}});
         if(!user){
@@ -53,20 +54,34 @@ export class AuthenticationService {
             throw new UnauthorizedException();
         }
 
-        const payload = {sub: user.id, email: user.email};
+        const [access_token , refreshToken] = await Promise.all([
+            this.SignToken<Partial<ActiveUserData>>(
+                user.id,
+                this.configurationJwt.accessTokenTtl,
+                {email:user.email}
 
-        const access_token = await this.jwtService.signAsync(payload, {
+        ),
+        this.SignToken(user.id , this.configurationJwt.accessTokenTtl)
+    ]);
+
+        return {
+              access_token,
+              refreshToken
+        }
+        
+    }
+
+
+    //Function for signin token 
+    private async SignToken<T>(userId: number, expiresIn: number, payload?: T) {
+        return await this.jwtService.signAsync({
+           sub: userId,
+           ...payload 
+        }, {
             audience: this.configurationJwt.audience,
             issuer: this.configurationJwt.issuer,
             secret: this.configurationJwt.secret,
             expiresIn: this.configurationJwt.accessTokenTtl
-        })
-
-
-
-        return {
-            access_token: access_token
-        }
-        
+        });
     }
 }
