@@ -58,7 +58,7 @@ export class AuthenticationService {
         const access_token = await this.jwtService.signAsync(payload, {
             audience: this.configurationJwt.audience,
             issuer: this.configurationJwt.issuer,
-            secret: this.configurationJwt.issuer,
+            secret: this.configurationJwt.secret,
             expiresIn: this.configurationJwt.accessTokenTtl
         })
 
